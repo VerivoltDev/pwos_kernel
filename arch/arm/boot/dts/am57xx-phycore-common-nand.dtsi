@@ -34,7 +34,7 @@
 };
 
 &gpmc {
-    status = "okay";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&gpmc_nand_pins_default>;
 
@@ -71,6 +71,9 @@
 		gpmc,cycle2cycle-delay-ns = <0>;
 		gpmc,clk-activation-ns = <0>;
 		gpmc,wr-data-mux-bus-ns = <0>;
+
+		#address-cells = <1>;
+		#size-cells = <1>;
 	};
 };
 
