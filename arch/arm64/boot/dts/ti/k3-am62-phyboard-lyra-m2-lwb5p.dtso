@@ -13,7 +13,7 @@
 
 &{/} {
 	aliases {
-		serial3 = "/bus@f0000/serial@2820000";
+		serial4 = "/bus@f0000/serial@2820000";
 	};
 
 	reg_wifi_en: fixed-regulator-wifi-en {
