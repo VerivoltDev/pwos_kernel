@@ -367,7 +367,7 @@
 	hdmi: hdmi@39 {
 		compatible = "sil,sii9022";
 		reg = <0x39>;
-		reset-gpios = <&gpio_exp 0 GPIO_ACTIVE_LOW>;
+
 		interrupt-parent = <&main_gpio0>;
 		interrupts = <16 IRQ_TYPE_EDGE_FALLING>;
 		pinctrl-names = "default";
