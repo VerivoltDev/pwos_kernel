@@ -10,6 +10,14 @@
  * https://www.phytec.com/product/phyboard-am64x
  */
 
+
+
+//*************************************************** //***************************************************
+//REVISAR LOS PARCHES DE SOLIDRUN  https://github.com/SolidRun/ti_am64x_build/blob/main/patches/linux/0007-arm64-dts-ti-k3-am64-main-icssg1_mdio-fix-clock-refe.patch
+//***************************************************
+//***************************************************
+ 
+
 /dts-v1/;
 
 #include <dt-bindings/gpio/gpio.h>
@@ -20,6 +28,7 @@
 #include <dt-bindings/phy/phy.h>
 #include "k3-am642.dtsi"
 #include "k3-am64-phycore-som.dtsi"
+#include <dt-bindings/phy/phy-cadence.h>
 
 / {
 	compatible = "phytec,am642-phyboard-electra-rdk",
@@ -108,12 +117,12 @@
 		ethernet-ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
+
 			icssg0_emac0: port@0 {
 				reg = <0>;
 				phy-handle = <&icssg0_phy1>;
 				phy-mode = "rgmii-id";
-				syscon-rgmii-delay = <&main_conf 0x4100>;
-				/* Filled in by bootloader */
+				// Filled in by bootloader
 				local-mac-address = [00 00 00 00 00 00];
 			};
 
@@ -121,7 +130,6 @@
 				reg = <1>;
 				phy-handle = <&icssg0_phy2>;
 				phy-mode = "rgmii-id";
-				syscon-rgmii-delay = <&main_conf 0x4104>;
 				/* Filled in by bootloader */
 				local-mac-address = [00 00 00 00 00 00];
 			};
@@ -133,17 +141,17 @@
 		autorepeat;
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio_keys_pins_default>;
-
+/*
 		key-home {
 			label = "home";
 			linux,code = <KEY_HOME>;
 			gpios = <&main_gpio0 17 GPIO_ACTIVE_HIGH>;
 		};
-
+*/
 		key-menu {
 			label = "menu";
 			linux,code = <KEY_MENU>;
-			gpios = <&main_gpio0 21 GPIO_ACTIVE_HIGH>;
+			gpios = <&main_gpio0 21 GPIO_ACTIVE_LOW>;
 		};
 	};
 
@@ -152,23 +160,28 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&leds_pins_default &user_leds_pins_default>;
 
-		led-1 {
-			color = <LED_COLOR_ID_RED>;
-			gpios = <&main_gpio0 15 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "mmc0";
-			function = LED_FUNCTION_DISK;
+		led1 {
+			label = "led1";
+			function = LED_FUNCTION_HEARTBEAT;
+			gpios = <&main_gpio0 26 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+			linux,default-trigger = "heartbeat";
 		};
 
+
+/*
 		led-2 {
 			color = <LED_COLOR_ID_GREEN>;
-			gpios = <&main_gpio0 16 GPIO_ACTIVE_HIGH>;
+			gpios = <&main_gpio1 60 GPIO_ACTIVE_HIGH>;
 			linux,default-trigger = "mmc1";
 			function = LED_FUNCTION_DISK;
 		};
+*/
 	};
 
+
 	pcie_refclk0: pcie-refclk0 {
-		status = "disabled";
+		status = "okay";
 		compatible = "gpio-gate-clock";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pcie_usb_sel_pins_default>;
@@ -186,9 +199,59 @@
 		regulator-boot-on;
 		regulator-always-on;
 	};
+/*
+	i2c-gpio {
+		compatible = "i2c-gpio";
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&main_i2c1_pins_default>;
+		gpios = <
+		&main_gpio1 66 GPIO_ACTIVE_HIGH // SDA
+		&main_gpio1 67 GPIO_ACTIVE_HIGH // SCL
+		>;
+		clock-frequency = <400000>;
+	};
+*/
+
+	fan: gpio-fan {
+		compatible = "gpio-fan";
+		gpio-fan,speed-map = <0 0 8600 1>;
+		gpios = <&main_gpio0 28 GPIO_ACTIVE_HIGH>;
+		#cooling-cells = <2>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_fan>;
+		status = "disabled";
+	};
+
+	pwmfan0: pwm-fan {
+	compatible = "pwm-fan";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gpio_fan>;
+	cooling-levels = <255 200 150 90 50 1>;   // PWM reversed so, cooling levels must be reversed
+	pwms = <&epwm3 0 6666666 0>; 
+	#cooling-cells = <2>;
+	status = "okay";
+	};
+
+
+	wlan_en: regulator-1 {
+		compatible = "regulator-fixed";
+		regulator-name = "wlan_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		enable-active-high;
+		gpios = <&main_gpio0 40 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wlan_en_pins_default>;
+	};
+
 };
 
 &main_pmx0 {
+
+    pinctrl-names = "default";
+    pinctrl-0 = <&aux_gpio_connector>;
+
 	can_tc1_pins_default: can-tc1-pins-default {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0084, PIN_OUTPUT, 7)	/* (P16) GPMC0_ADVn_ALE.GPIO0_32 */
@@ -257,12 +320,35 @@
 		>;
 	};
 
-	main_i2c1_pins_default: main-i2c1-pins-default {
+	main_i2c0_pins_default: main-i2c0-pins-default {
 		pinctrl-single,pins = <
-			AM64X_IOPAD(0x0268, PIN_INPUT, 0)	/* (C18) I2C1_SCL */
-			AM64X_IOPAD(0x026c, PIN_INPUT, 0)	/* (B19) I2C1_SDA */
+			AM64X_IOPAD(0x0260, PIN_INPUT_PULLUP, 0)	/* (A18) I2C1_SCL */
+			AM64X_IOPAD(0x0264, PIN_INPUT_PULLUP, 0)	/* (B18) I2C1_SDA */
 		>;
 	};
+	
+	main_i2c1_pins_default: main-i2c1-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0268, PIN_INPUT, 0)	// (C18) I2C1_SCL 
+			AM64X_IOPAD(0x026c, PIN_INPUT, 0)	// (B19) I2C1_SDA 
+		>;
+	};
+
+	main_i2c2_pins_default: main-i2c2-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x00B0, PIN_INPUT, 1)	// (P19) I2C2_SCL 
+			AM64X_IOPAD(0x00B4, PIN_INPUT, 1)	// (R21) I2C2_SDA 
+		>;
+	};
+
+/*
+	mcu_i2c0_pins_default: mcu-i2c0-pins-default {
+		pinctrl-single,pins = <
+			AM64X_MCU_IOPAD(0x048, PIN_INPUT, 0)	// (E9)  MCU_I2C0_SCL 
+			AM64X_MCU_IOPAD(0x04C, PIN_INPUT, 0)	// (A10) MCU_I2C0_SDA 
+		>;
+	};
+*/
 
 	main_mcan0_pins_default: main-mcan0-pins-default {
 		pinctrl-single,pins = <
@@ -336,10 +422,65 @@
 
 	user_leds_pins_default: user-leds-pins-default {
 		pinctrl-single,pins = <
-			AM64X_IOPAD(0x003c, PIN_OUTPUT, 7)	/* (T20) GPMC0_AD0.GPIO0_15 */
-			AM64X_IOPAD(0x0040, PIN_OUTPUT, 7)	/* (U21) GPMC0_AD1.GPIO0_16 */
+			AM64X_IOPAD(0x0058, PIN_OUTPUT, 7)	/* (V21) GPIO0_24 */
+			AM64X_IOPAD(0x0068, PIN_OUTPUT, 7)	/* (W20) GPIO0_26 */
+			AM64X_IOPAD(0x0074, PIN_OUTPUT, 7)	/* (Y21) GPIO0_29 */
+			AM64X_IOPAD(0x0078, PIN_OUTPUT, 7)	/* (Y20) GPIO0_30 */
 		>;
 	};
+
+
+	main_spi1_pins_default: main-spi1-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0224, PIN_INPUT , 0)	/* (C14) SPI1_CLK  GPIO1_49  */
+			AM64X_IOPAD(0x021C, PIN_OUTPUT, 0)	/* (D14) SPI1_CS0  GPIO1_47  */ 
+			AM64X_IOPAD(0x0220, PIN_OUTPUT, 0)	/* (D14) SPI1_CS1  GPIO1_48  */
+			AM64X_IOPAD(0x0228, PIN_OUTPUT, 0)	/* (B15) SPI1_D0   GPIO1_50  */
+			AM64X_IOPAD(0x022C, PIN_INPUT , 0)	/* (A15) SPI1_D1   GPIO1_51  */
+		>;
+	};
+
+	gc9a01_pins: gc9a01-pins {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0050, PIN_INPUT, 7) /* (U19)  GPMC0_AD5  GPIO0_83 */
+			AM64X_IOPAD(0x0060, PIN_INPUT, 7) /* (T17)  GPMC0_AD9  GPIO0_24 */   
+
+
+		>;
+	};
+
+	touch_screen_pins_default: touch-screen-pins-default {
+		pinctrl-single,pins = <
+		   AM64X_IOPAD(0x007C, PIN_INPUT, 7) /* (R17) GPIO0_31 */
+		   AM64X_IOPAD(0x004C, PIN_OUTPUT, 7) /* (R16) GPIO0_82 */
+		>;
+	};
+
+	pinctrl_gpio_fan: pinctrl-gpio-fan {
+		pinctrl-single,pins = <
+//			AM64X_IOPAD(0x070, PIN_OUTPUT, 7) /* (V18) GPMC0_AD13.GPIO0_28 */
+			AM64X_IOPAD(0x070, PIN_OUTPUT, 3) /* (V18) GPMC0_AD13.GPIO0_28, 9 = PWM3_A0, 3 = EHRPWM3_A */
+		>;
+	};
+
+	wlan_en_pins_default: wlan-en-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0A4, PIN_OUTPUT, 7) /* (N17) GPIO0_40*/
+		>;
+	};
+
+	aux_gpio_connector: aux-gpio-connector {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0A8, PIN_INPUT, 7) /* (R19) GPIO0_41*/
+			AM64X_IOPAD(0x0AC, PIN_INPUT, 7) /* (R20) GPIO0_42*/
+			AM64X_IOPAD(0x088, PIN_INPUT, 7) /* (R18) GPIO0_33*/
+			AM64X_IOPAD(0x094, PIN_INPUT, 7) /* (T19) GPIO0_36*/
+			AM64X_IOPAD(0x23C, PIN_INPUT | INPUT_EN, 7) /* (A16) GPIO1_55*/
+			AM64X_IOPAD(0x270, PIN_INPUT | INPUT_EN, 7) /* (D18) GPIO1_68*/
+		>;
+	};
+
+
 };
 
 &icssg0_mdio {
@@ -376,12 +517,72 @@
 	};
 };
 
+&main_i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c0_pins_default>;
+	clock-frequency = <400000>;
+};
+
+&main_i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c2_pins_default>;
+	clock-frequency = <400000>;
+};
+
+
+
+&epwm3{
+  status = "okay";
+};
+
+
+
 &main_i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_i2c1_pins_default>;
 	clock-frequency = <400000>;
 
+	gt911: touchscreen@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_screen_pins_default>;
+
+		interrupt-parent = <&main_gpio0>;
+		interrupts = <31 IRQ_TYPE_EDGE_RISING>;
+//		interrupts = <31 IRQ_TYPE_LEVEL_HIGH>;
+		reset-gpios = <&main_gpio0 82 GPIO_ACTIVE_HIGH>;
+		irq-gpios   = <&main_gpio0 31 GPIO_ACTIVE_HIGH>;
+
+		touchscreen-inverted-x;
+		touchscreen-inverted-y;
+		touchscreen-swapped-x-y;
+	};
+
+	lm75@4c {
+		compatible = "nxp,lm75";
+		reg = <0x4c>;
+	};
+
+	lm75@4f {
+		compatible = "nxp,lm75";
+		reg = <0x4f>;
+	};
+	
+};
+
+
+/*
+
+&main_i2c1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c1_pins_default>;
+	clock-frequency = <400000>;
 	eeprom@51 {
 		compatible = "atmel,24c02";
 		pagesize = <16>;
@@ -407,7 +608,10 @@
 			type = <PCA9532_TYPE_LED>;
 		};
 	};
+
 };
+*/
+
 
 &i2c_som_rtc {
 	enable-level-switching-mode;
@@ -455,14 +659,14 @@
 };
 
 &pcie0_ep {
-	status = "disabled";
+	status = "okay";
 	phys = <&serdes0_pcie_usb_link>;
 	phy-names = "pcie-phy";
 	num-lanes = <1>;
 };
 
 &pcie0_rc {
-	status = "disabled";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&pcie0_pins_default>;
 	reset-gpios = <&main_gpio0 37 GPIO_ACTIVE_HIGH>;
@@ -472,7 +676,8 @@
 };
 
 &sdhci1 {
-	vmmc-supply = <&vcc_3v3_mmc>;
+	//vmmc-supply = <&vcc_3v3_mmc>;
+	vmmc-supply = <&wlan_en>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_mmc1_pins_default>;
 	bus-width = <4>;
@@ -493,11 +698,12 @@
 
 &serdes_ln_ctrl {
 	idle-states = <AM64_SERDES0_LANE0_USB>;
+    idle-states = <AM64_SERDES0_LANE0_PCIE0>;
 };
 
-&usbss0 {
-	ti,vbus-divider;
-};
+//&usbss0 {
+//	ti,vbus-divider;
+//};
 
 &usb0 {
 	dr_mode = "host";
@@ -507,3 +713,177 @@
 	phys = <&serdes0_pcie_usb_link>;
 	phy-names = "cdns3,usb3-phy";
 };
+
+
+&main_spi1 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_spi1_pins_default>;
+	ti,pindir-d0-out-d1-in = <1>;
+	#address-cells = <1>;
+	#size-cells    = <0>;
+
+        gc9a01: gc9a01@1 {
+             compatible = "sitronix,st7789v";
+             reg = <1>;
+             pinctrl-names = "default";
+             pinctrl-0     = <&gc9a01_pins>;
+             dc-gpios    = <&main_gpio0 24 GPIO_ACTIVE_HIGH>; //INVERTED
+             reset-gpios = <&main_gpio0 83 GPIO_ACTIVE_LOW>;  //INVERTED
+             spi-max-frequency = <32000000>;
+             buswidth = <8>;
+             txbuflen = <32768>;
+             width    = <240>;
+             height   = <320>;
+             rotate   = <90>;
+             spi-cpol;
+             spi-cpha;
+             debug = <0x4000000>;
+        };
+/*
+		spi_nor: w25q128@0 {
+			#address-cells = <1>;
+			#size-cells = <1>;
+			compatible = "winbond,w25q128", "jedec,spi-nor";
+			spi-max-frequency = <80000000>;
+			m25p,fast-read;
+			reg = <0>;
+		};
+
+	spidev@1 {
+		spi-max-frequency = <24000000>;
+		reg = <1>;
+		compatible = "rohm,dh2228fv";
+	};
+*/
+	spidev@0 {
+		spi-max-frequency = <24000000>;
+		reg = <0>;
+		compatible = "rohm,dh2228fv";
+	};
+
+};
+
+
+&main_spi2 {
+	status = "disabled";
+};
+
+&main_spi3 {
+	status = "disabled";
+};
+
+&main_spi4 {
+	status = "disabled";
+};
+
+&mcu_spi0 {
+	status = "disabled";
+};
+
+&mcu_spi1 {
+	status = "disabled";
+};
+
+&main_uart2 {
+	status = "disabled";
+};
+
+&main_uart3 {
+	status = "disabled";
+};
+
+&main_uart4 {
+	status = "disabled";
+};
+
+&main_uart5 {
+	status = "disabled";
+};
+
+&main_uart6 {
+	status = "disabled";
+};
+
+&mcu_uart0 {
+	status = "disabled";
+};
+
+&mcu_uart1 {
+//	pinctrl-names = "default";
+//	pinctrl-0 = <&mcu_uart1_pins_default>;
+
+	status = "disabled";
+};
+
+&mcu_i2c0 {
+	status = "disabled";
+};
+
+&mcu_i2c1 {
+	status = "disabled";
+};
+
+&main_mcan0 {
+	status = "disabled";
+};
+
+&main_mcan1 {
+	status = "disabled";
+};
+
+
+
+//****************** PCIe *************
+//*************************************
+&serdes0_pcie_usb_link {
+	cdns,phy-type = <PHY_TYPE_PCIE>;
+};
+
+
+&serdes0 {
+	assigned-clock-parents = <&pcie_refclk0>, <&pcie_refclk0>, <&pcie_refclk0>;
+};
+
+&serdes_refclk {
+	clock-frequency = <100000000>;
+};
+
+/*
+ * Assign pcie_refclk0 to serdes_wiz0 as ext_ref_clk.
+ * This makes sure that the clock generator gets enabled at the right time.
+ */
+&serdes_wiz0 {
+	clocks = <&k3_clks 162 0>, <&k3_clks 162 1>, <&pcie_refclk0>;
+};
+
+&usbss0 {
+	ti,usb2-only;
+};
+
+&usb0 {
+	maximum-speed = "high-speed";
+};
+
+&thermal_zones {
+	main0_thermal: main0-thermal {
+		trips {
+			main0_thermal_trip0: main0-thermal-trip {
+				temperature = <45000>;  /* millicelsius */
+				hysteresis = <5000>;    /* millicelsius */
+				type = "active";
+			};
+		};
+
+		cooling-maps {
+			map0 {
+				trip = <&main0_thermal_trip0>;
+				cooling-device = <&pwmfan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			};
+		};
+	};
+};
+
+
+
+
