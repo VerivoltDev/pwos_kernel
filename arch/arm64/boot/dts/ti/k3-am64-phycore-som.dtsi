@@ -105,6 +105,18 @@
 			alignment = <0x1000>;
 			no-map;
 		};
+
+
+		main_verivolt_buffering_dma_memory_region: r5f-dma-memory@a5800000 {
+			compatible = "shared-dma-pool";
+    		reg = <0x0 0xa5800000 0x0 0x4000000>;
+			no-map;
+  		};
+	};
+
+	r5f_shared {
+  		compatible = "vendor,device";
+  		memory-region = <&main_verivolt_buffering_dma_memory_region>;
 	};
 
 	leds {
