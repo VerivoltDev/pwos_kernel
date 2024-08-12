@@ -156,6 +156,14 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&leds_pins_default &user_leds_pins_default>;
 
+		rgb-g {
+			label = "RGB:Green:Heartbeat";
+			gpios = <&main_gpio0 26 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+			linux,default-trigger = "heartbeat";
+			function = LED_FUNCTION_HEARTBEAT;
+		};
+
 		led-1 {
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&main_gpio0 15 GPIO_ACTIVE_HIGH>;
