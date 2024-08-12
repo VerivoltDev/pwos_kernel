@@ -164,16 +164,18 @@
 			function = LED_FUNCTION_HEARTBEAT;
 		};
 
-		led-1 {
-			color = <LED_COLOR_ID_RED>;
-			gpios = <&main_gpio0 15 GPIO_ACTIVE_HIGH>;
+		rgb-r {
+			label = "RGB:Red";
+			gpios = <&main_gpio0 30 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
 			linux,default-trigger = "mmc0";
 			function = LED_FUNCTION_DISK;
 		};
 
-		led-2 {
-			color = <LED_COLOR_ID_GREEN>;
-			gpios = <&main_gpio0 16 GPIO_ACTIVE_HIGH>;
+		rgb-b {
+			label = "RGB:Blue";
+			gpios = <&main_gpio0 22 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
 			linux,default-trigger = "mmc1";
 			function = LED_FUNCTION_DISK;
 		};
@@ -348,8 +350,11 @@
 
 	user_leds_pins_default: user-leds-pins-default {
 		pinctrl-single,pins = <
-			AM64X_IOPAD(0x003c, PIN_OUTPUT, 7)	/* (T20) GPMC0_AD0.GPIO0_15 */
-			AM64X_IOPAD(0x0040, PIN_OUTPUT, 7)	/* (U21) GPMC0_AD1.GPIO0_16 */
+			AM64X_IOPAD(0x0058, PIN_OUTPUT, 7)	/* (V21) GPMC0_AD7/BM_7/GPIO0_22/LED_STATUS_BLUE */
+			AM64X_IOPAD(0x0068, PIN_OUTPUT, 7)	/* (W20) GPMC0_AD11/BM_11/GPIO0_26/LED_STATUS_GREEN */
+			AM64X_IOPAD(0x0074, PIN_OUTPUT, 7)	/* (Y21) GPMC0_AD14/BM_14/GPIO0_29/LED_STATUS_WHITE */
+			AM64X_IOPAD(0x0078, PIN_OUTPUT, 7)	/* (Y20) GPMC0_AD15/BM_15/GPIO0_30/LED_STATUS_RED */
+
 		>;
 	};
 
@@ -365,15 +370,15 @@
 
 	gc9a01_pins: gc9a01-pins {
 		pinctrl-single,pins = <
-			AM64X_IOPAD(0x0050, PIN_INPUT, 7) /* (U19)  GPMC0_AD5  GPIO0_83 */
-			AM64X_IOPAD(0x0060, PIN_INPUT, 7) /* (T17)  GPMC0_AD9  GPIO0_24 */   
+			AM64X_IOPAD(0x0050, PIN_INPUT, 7) /* (U19)  GPMC0_AD5/BM_5/GPIO0_83/RST_LCD */
+			AM64X_IOPAD(0x0060, PIN_INPUT, 7) /* (T17)  GPMC0_AD9/BM_9/GPIO0_24/DC_LCD */
 		>;
 	};
 
 	touch_screen_pins_default: touch-screen-pins-default {
 		pinctrl-single,pins = <
-		   AM64X_IOPAD(0x007C, PIN_INPUT, 7) /* (R17) GPIO0_31 */
-		   AM64X_IOPAD(0x004C, PIN_OUTPUT, 7) /* (R16) GPIO0_82 */
+		   AM64X_IOPAD(0x007C, PIN_INPUT, 7) /* (R17) GPMC0_CLK/GPIO0_31/IRQ_TS_LCD */
+		   AM64X_IOPAD(0x004C, PIN_OUTPUT, 7) /* (R16) GPMC0_AD4/BM_4/GPIO0_82/RST_TS_LCD */
 		>;
 	};
 
@@ -428,7 +433,6 @@
 
 		interrupt-parent = <&main_gpio0>;
 		interrupts = <31 IRQ_TYPE_EDGE_RISING>;
-		// interrupts = <31 IRQ_TYPE_LEVEL_HIGH>;
 		reset-gpios = <&main_gpio0 82 GPIO_ACTIVE_HIGH>;
 		irq-gpios   = <&main_gpio0 31 GPIO_ACTIVE_HIGH>;
 
