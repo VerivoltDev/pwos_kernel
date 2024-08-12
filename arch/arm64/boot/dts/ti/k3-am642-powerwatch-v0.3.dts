@@ -184,6 +184,9 @@
 };
 
 &main_pmx0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&user_gpio_connector>;
+
 	can_tc1_pins_default: can-tc1-pins-default {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0084, PIN_OUTPUT, 7)	/* (P16) GPMC0_ADVn_ALE.GPIO0_32 */
@@ -355,6 +358,20 @@
 		   AM64X_IOPAD(0x004C, PIN_OUTPUT, 7) /* (R16) GPMC0_AD4/BM_4/GPIO0_82/RST_TS_LCD */
 		>;
 	};
+
+
+	user_gpio_connector: user-gpio-connector {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0A8, PIN_OUTPUT, 7) /* (R19) GPIO0_41/GPIO_CN2_0 */
+			AM64X_IOPAD(0x088, PIN_OUTPUT, 7) /* (R18) GPIO0_33/GPIO_CN2_1 */
+			AM64X_IOPAD(0x094, PIN_INPUT, 7)  /* (T19) GPIO0_36/GPIO_CN2_2 */
+			AM64X_IOPAD(0x0AC, PIN_INPUT, 7)  /* (R20) GPIO0_42/GPIO_CN2_3 */
+			AM64X_IOPAD(0x23C, PIN_INPUT | INPUT_EN, 7) /* (A16) GPIO1_55/UART0_RTS/FR_BTN */
+			// TODO: GPIO1_54/INT_BTN
+			AM64X_IOPAD(0x270, PIN_INPUT | INPUT_EN, 7) /* (D18) GPIO1_68/EXT_BTN */
+		>;
+	};
+
 
 };
 
