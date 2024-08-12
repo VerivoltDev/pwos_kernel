@@ -132,25 +132,6 @@
 		};
 	};
 
-	keys {
-		compatible = "gpio-keys";
-		autorepeat;
-		pinctrl-names = "default";
-		pinctrl-0 = <&gpio_keys_pins_default>;
-
-		key-home {
-			label = "home";
-			linux,code = <KEY_HOME>;
-			gpios = <&main_gpio0 17 GPIO_ACTIVE_HIGH>;
-		};
-
-		key-menu {
-			label = "menu";
-			linux,code = <KEY_MENU>;
-			gpios = <&main_gpio0 21 GPIO_ACTIVE_HIGH>;
-		};
-	};
-
 	leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
@@ -218,13 +199,6 @@
 	clkout0_pins_default: clkout0-pins-default {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0274, PIN_OUTPUT, 5)	/* (A19) EXT_REFCLK1.CLKOUT0 */
-		>;
-	};
-
-	gpio_keys_pins_default: gpio-keys-pins-default {
-		pinctrl-single,pins = <
-			AM64X_IOPAD(0x0044, PIN_INPUT, 7)	/* (T18) GPMC0_AD2.GPIO0_17 */
-			AM64X_IOPAD(0x0054, PIN_INPUT, 7)	/* (V20) GPMC0_AD6.GPIO0_21 */
 		>;
 	};
 
@@ -445,26 +419,6 @@
 		compatible = "atmel,24c02";
 		pagesize = <16>;
 		reg = <0x51>;
-	};
-
-	led-controller@62 {
-		compatible = "nxp,pca9533";
-		reg = <0x62>;
-
-		led-3 {
-			label = "red:user";
-			type = <PCA9532_TYPE_LED>;
-		};
-
-		led-4 {
-			label = "green:user";
-			type = <PCA9532_TYPE_LED>;
-		};
-
-		led-5 {
-			label = "blue:user";
-			type = <PCA9532_TYPE_LED>;
-		};
 	};
 };
 
