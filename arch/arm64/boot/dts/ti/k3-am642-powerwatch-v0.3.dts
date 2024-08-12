@@ -160,6 +160,12 @@
 			linux,default-trigger = "mmc1";
 			function = LED_FUNCTION_DISK;
 		};
+
+		rgb-w {
+			label = "RGB:White";
+			gpios = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
 	};
 
 	pcie_refclk0: pcie-refclk0 {
@@ -331,7 +337,6 @@
 			AM64X_IOPAD(0x0068, PIN_OUTPUT, 7)	/* (W20) GPMC0_AD11/BM_11/GPIO0_26/LED_STATUS_GREEN */
 			AM64X_IOPAD(0x0074, PIN_OUTPUT, 7)	/* (Y21) GPMC0_AD14/BM_14/GPIO0_29/LED_STATUS_WHITE */
 			AM64X_IOPAD(0x0078, PIN_OUTPUT, 7)	/* (Y20) GPMC0_AD15/BM_15/GPIO0_30/LED_STATUS_RED */
-
 		>;
 	};
 
