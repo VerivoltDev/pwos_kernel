@@ -509,11 +509,11 @@
 		touchscreen-swapped-x-y;
 	};
 
-	eeprom@51 {
-		compatible = "atmel,24c02";
-		pagesize = <16>;
-		reg = <0x51>;
-	};
+	// eeprom@51 {
+	// 	compatible = "atmel,24c02";
+	// 	pagesize = <16>;
+	// 	reg = <0x51>;
+	// };
 };
 
 &main_i2c2 {
