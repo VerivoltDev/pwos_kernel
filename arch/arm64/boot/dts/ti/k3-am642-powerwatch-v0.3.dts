@@ -151,6 +151,8 @@
 			default-state = "off";
 			linux,default-trigger = "mmc0";
 			function = LED_FUNCTION_DISK;
+			// linux,default-trigger = "cpu";
+			// function = LED_FUNCTION_CPU;
 		};
 
 		rgb-b {
@@ -169,7 +171,7 @@
 	};
 
 	pcie_refclk0: pcie-refclk0 {
-		status = "disabled";
+		status = "okay";
 		compatible = "gpio-gate-clock";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pcie_usb_sel_pins_default>;
@@ -490,14 +492,14 @@
 };
 
 &pcie0_ep {
-	status = "disabled";
+	status = "okay";
 	phys = <&serdes0_pcie_usb_link>;
 	phy-names = "pcie-phy";
 	num-lanes = <1>;
 };
 
 &pcie0_rc {
-	status = "disabled";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&pcie0_pins_default>;
 	reset-gpios = <&main_gpio0 37 GPIO_ACTIVE_HIGH>;
@@ -517,6 +519,8 @@
 };
 
 &serdes0 {
+	assigned-clock-parents = <&pcie_refclk0>, <&pcie_refclk0>, <&pcie_refclk0>;
+	
 	serdes0_pcie_usb_link: phy@0 {
 		reg = <0>;
 		cdns,num-lanes = <1>;
@@ -527,16 +531,16 @@
 };
 
 &serdes_ln_ctrl {
-	idle-states = <AM64_SERDES0_LANE0_USB>;
+	idle-states = <AM64_SERDES0_LANE0_PCIE0>;
 };
 
 &usbss0 {
-	ti,vbus-divider;
+	ti,usb2-only;
 };
 
 &usb0 {
 	dr_mode = "host";
-	maximum-speed = "super-speed";
+	maximum-speed = "high-speed";
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_usb0_pins_default>;
 	phys = <&serdes0_pcie_usb_link>;
@@ -585,4 +589,18 @@
 	};
 };
 
+&serdes0_pcie_usb_link {
+	cdns,phy-type = <PHY_TYPE_PCIE>;
+};
 
+&serdes_refclk {
+	clock-frequency = <100000000>;
+};
+
+/*
+ * Assign pcie_refclk0 to serdes_wiz0 as ext_ref_clk.
+ * This makes sure that the clock generator gets enabled at the right time.
+ */
+&serdes_wiz0 {
+	clocks = <&k3_clks 162 0>, <&k3_clks 162 1>, <&pcie_refclk0>;
+};
