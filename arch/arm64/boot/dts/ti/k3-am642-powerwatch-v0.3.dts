@@ -209,6 +209,17 @@
 	// 	#cooling-cells = <2>;
 	// 	status = "okay";
 	// };
+
+	wlan_en: regulator-1 {
+		compatible = "regulator-fixed";
+		regulator-name = "wlan_en";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		enable-active-high;
+		gpios = <&main_gpio0 40 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wlan_en_pins_default>;
+	};
 };
 
 &main_pmx0 {
@@ -420,6 +431,12 @@
 		>;
 	};
 
+	wlan_en_pins_default: wlan-en-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0A4, PIN_OUTPUT, 7) /* (N17) GPIO0_40*/
+		>;
+	};
+
 };
 
 &icssg0_mdio {
@@ -569,7 +586,8 @@
 };
 
 &sdhci1 {
-	vmmc-supply = <&vcc_3v3_mmc>;
+	// vmmc-supply = <&vcc_3v3_mmc>;
+	vmmc-supply = <&wlan_en>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_mmc1_pins_default>;
 	bus-width = <4>;
