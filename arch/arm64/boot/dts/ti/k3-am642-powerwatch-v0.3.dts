@@ -256,12 +256,27 @@
 		>;
 	};
 
+	main_i2c0_pins_default: main-i2c0-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x0260, PIN_INPUT_PULLUP, 0)	/* (A18) I2C1_SCL */
+			AM64X_IOPAD(0x0264, PIN_INPUT_PULLUP, 0)	/* (B18) I2C1_SDA */
+		>;
+	};
+	
 	main_i2c1_pins_default: main-i2c1-pins-default {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0268, PIN_INPUT, 0)	/* (C18) I2C1_SCL */
 			AM64X_IOPAD(0x026c, PIN_INPUT, 0)	/* (B19) I2C1_SDA */
 		>;
 	};
+
+	main_i2c2_pins_default: main-i2c2-pins-default {
+		pinctrl-single,pins = <
+			AM64X_IOPAD(0x00B0, PIN_INPUT, 1)	// (P19) I2C2_SCL 
+			AM64X_IOPAD(0x00B4, PIN_INPUT, 1)	// (R21) I2C2_SDA 
+		>;
+	};
+
 
 	main_mcan0_pins_default: main-mcan0-pins-default {
 		pinctrl-single,pins = <
@@ -416,6 +431,13 @@
 	};
 };
 
+&main_i2c0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c0_pins_default>;
+	clock-frequency = <400000>;
+};
+
 &main_i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
@@ -444,6 +466,13 @@
 		pagesize = <16>;
 		reg = <0x51>;
 	};
+};
+
+&main_i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&main_i2c2_pins_default>;
+	clock-frequency = <400000>;
 };
 
 &i2c_som_rtc {
