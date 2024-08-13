@@ -199,6 +199,16 @@
 		pinctrl-0 = <&pinctrl_gpio_fan>;
 		status = "okay";
 	};
+
+	// pwmfan0: pwm-fan {
+	// 	compatible = "pwm-fan";
+	// 	pinctrl-names = "default";
+	// 	pinctrl-0 = <&pinctrl_gpio_fan>;
+	// 	cooling-levels = <255 200 150 90 50 1>;   // PWM reversed so, cooling levels must be reversed
+	// 	pwms = <&epwm3 0 6666666 0>; 
+	// 	#cooling-cells = <2>;
+	// 	status = "okay";
+	// };
 };
 
 &main_pmx0 {
@@ -391,7 +401,6 @@
 		>;
 	};
 
-
 	user_gpio_connector: user-gpio-connector {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0A8, PIN_OUTPUT, 7) /* (R19) GPIO0_41/GPIO_CN2_0 */
@@ -453,6 +462,12 @@
 	pinctrl-0 = <&main_i2c0_pins_default>;
 	clock-frequency = <400000>;
 };
+
+
+// &epwm3{
+// 	status = "okay";
+// };
+
 
 &main_i2c1 {
 	status = "okay";
