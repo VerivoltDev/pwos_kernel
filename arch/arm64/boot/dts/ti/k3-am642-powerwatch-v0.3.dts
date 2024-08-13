@@ -514,6 +514,36 @@
 	// 	pagesize = <16>;
 	// 	reg = <0x51>;
 	// };
+
+	lm75@48 {
+		compatible = "nxp,lm75";
+		reg = <0x48>;
+	};
+	
+	lm75@49 {
+		compatible = "nxp,lm75";
+		reg = <0x49>;
+	};
+
+	lm75@4a {
+		compatible = "nxp,lm75";
+		reg = <0x4a>;
+	};
+
+	lm75@4b {
+		compatible = "nxp,lm75";
+		reg = <0x4b>;
+	};
+
+	lm75@4c {
+		compatible = "nxp,lm75";
+		reg = <0x4c>;
+	};
+
+	lm75@4f {
+		compatible = "nxp,lm75";
+		reg = <0x4f>;
+	};
 };
 
 &main_i2c2 {
