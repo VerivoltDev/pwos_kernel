@@ -377,6 +377,7 @@
 		compatible = "ti,am654-mcspi","ti,omap4-mcspi";
 		reg = <0x00 0x20110000 0x00 0x400>;
 		interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
+		ti,spi-num-cs = <2>;
 		#address-cells = <1>;
 		#size-cells = <0>;
 		power-domains = <&k3_pds 142 TI_SCI_PD_EXCLUSIVE>;
