@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (C) 2021 PHYTEC America, LLC - https://www.phytec.com
- * Author: Matt McKee <mmckee@phytec.com>
- *
- * Copyright (C) 2022 PHYTEC Messtechnik GmbH
- * Author: Wadim Egorov <w.egorov@phytec.de>
+ * Copyright (C) 2024 Verivolt America, LLC - https://www.verivolt.com/
+ * Author: Carlos Camargo <carlos.camargo@verivolt.com>
+ * Author: Andres Calderon <andres.calderon@verivolt.com>
+ * Author: Leonardo Urrego <leonardo.urrego@verivolt.com>
  *
  * Product homepage:
- * https://www.phytec.com/product/phyboard-am64x
+ * https://www.verivolt.com/
  */
 
 /dts-v1/;
@@ -128,7 +127,7 @@
 
 		r5f_shared {
 			compatible = "vendor,device";
-			memory-region = <&main_verivolt_buffering_dma_memory_region>;
+			memory-region = <&main_daq_ring_buffering_dma_memory_region>;
 		};
 	};
 
@@ -690,7 +689,7 @@
 };
 
 &reserved_memory {
-	main_verivolt_buffering_dma_memory_region: r5f-dma-memory@a5800000 {
+	main_daq_ring_buffering_dma_memory_region: daq-c-ring-buffer@a5800000 {
 		compatible = "shared-dma-pool";
 		reg = <0x0 0xa5800000 0x0 0x4000000>;
 		no-map;
