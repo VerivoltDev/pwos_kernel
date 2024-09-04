@@ -1,0 +1,70 @@
+name: pw-kernel-builder
+
+services:
+  pw-kernel-init:
+    image: pw-build-kernel
+    build:
+      context: .
+      dockerfile: VV/Dockeroment/Dockerfile
+      args:
+        TZ: ${TZ:?err}
+        PWD: ${PWD:?err}
+        DUID: ${DUID:?err}
+        DGID: ${DGID:?err}
+        DUSR: ${DUSR:?err}
+    user: "${DUID}:${DGID}"
+    working_dir: ${PWD}
+    environment:
+      - WORKDIR=${PWD}
+      - TERM
+    volumes:
+      - ${PWD}:${PWD}
+    # command: bash -c "./VV/scripts/init_sdk.bash && ./VV/scripts/init_laird_backports.bash"
+    command: bash -c "./VV/scripts/init_laird_backports.bash"
+  
+
+  pw-kernel-build:
+    image: pw-build-kernel
+    user: "${DUID}:${DGID}"
+    working_dir: ${PWD}
+    environment:
+      - WORKDIR=${PWD}
+    volumes:
+      - ${PWD}:${PWD}
+    # command: bash -c "./VV/scripts/build_kernel.bash && ./VV/scripts/build_laird_backports.bash"
+    command: bash -c ". ~/SDK_PHYTEC/environment-setup-aarch64-phytec-linux && ./VV/scripts/build_kernel.bash && ./VV/scripts/build_laird_backports.bash"
+    depends_on:
+      pw-kernel-init:
+        condition: service_completed_successfully
+  
+  pw-kernel-bash:
+    image: pw-build-kernel
+    profiles:
+      - dontRunUp
+    user: "${DUID}:${DGID}"
+    working_dir: ${PWD}
+    environment:
+      - WORKDIR=${PWD}
+      - TERM
+    volumes:
+      - ${PWD}:${PWD}
+    # command: bash -c ". ${PWD}/SDK_PHYTEC/environment-setup-aarch64-phytec-linux && bash"
+    command: bash -c ". ~/SDK_PHYTEC/environment-setup-aarch64-phytec-linux && bash"
+    depends_on:
+      pw-kernel-init:
+        condition: service_completed_successfully
+
+  pw-kernel-clean:
+    image: pw-build-kernel
+    profiles:
+      - dontRunUp
+    user: "${DUID}:${DGID}"
+    working_dir: ${PWD}
+    environment:
+      - WORKDIR=${PWD}
+    volumes:
+      - ${PWD}:${PWD}
+    command: bash -c ". ~/SDK_PHYTEC/environment-setup-aarch64-phytec-linux && make clean && ./VV/scripts/init_laird_backports.bash"
+    depends_on:
+      pw-kernel-init:
+        condition: service_completed_successfully

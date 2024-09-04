@@ -169,3 +169,13 @@ sphinx_*/
 
 # Rust analyzer configuration
 /rust-project.json
+
+# VV
+summit-backports-12.29.0.22/
+SDK_PHYTEC/
+VV/DOWN/
+VV/LOGS/
+VV/KOUT/
+VV/KBKP/
+OUT*/
+xUL/
