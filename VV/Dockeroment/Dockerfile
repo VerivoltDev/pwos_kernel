@@ -6,7 +6,8 @@ ARG DUSR
 ARG TZ
 
 ARG VV_DIR_DOWN=${PWD}/VV/DOWN
-ARG PHYTEC_SDK_URL=https://download.phytec.de/Software/Linux/BSP-Yocto-AM64x/BSP-Yocto-Ampliphy-AM64x-PD23.2.1/sdk/ampliphy
+# ARG PHYTEC_SDK_URL=https://download.phytec.de/Software/Linux/BSP-Yocto-AM64x/BSP-Yocto-Ampliphy-AM64x-PD23.2.1/sdk/ampliphy
+ARG PHYTEC_SDK_URL=https://github.com/VerivoltDev/pwos_kernel/releases/download/PW0310
 ARG PHYTEC_SDK_FILE=phytec-ampliphy-glibc-x86_64-phytec-headless-image-aarch64-toolchain-BSP-Yocto-Ampliphy-AM64x-PD23.2.1.sh
 ARG PHYTEC_SDK_CHECKSUM=ed14ca396caa739287ff84d4868b5f77377feaa2
 

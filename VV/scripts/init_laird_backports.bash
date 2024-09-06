@@ -8,7 +8,8 @@ VV_DIR_DOWN="${WORKDIR}/VV/DOWN"
 VV_DIR_LOGS="${WORKDIR}/VV/LOGS"
 
 LAIRD_BACKPORTS_DIR="${WORKDIR}/summit-backports-12.29.0.22"
-LAIRD_BACKPORTS_URL=https://github.com/LairdCP/Sterling-LWB-and-LWB5-Release-Packages/releases/download/LRD-REL-12.29.0.22
+LAIRD_BACKPORTS_URL=https://github.com/VerivoltDev/pwos_kernel/releases/download/PW0310
+# LAIRD_BACKPORTS_URL=https://github.com/LairdCP/Sterling-LWB-and-LWB5-Release-Packages/releases/download/LRD-REL-12.29.0.22
 LAIRD_BACKPORTS_FILE=summit-backports-12.29.0.22.tar.bz2
 LAIRD_BACKPORTS_CHECKSUM=704a5383f8af60bf74f3f5413c63c088804c6c97
 
