@@ -64,9 +64,8 @@ USER ${DUSR}
 COPY ${PWD}/VV /tmp/VV
 
 # Install Phytec SDK
-RUN mkdir -p /tmp/VV/DOWN && \
+RUN sudo mkdir -p /tmp/VV/DOWN && \
     cd /tmp/VV/DOWN && \
-    ls /tmp/VV/DOWN/ -al && \
     sudo wget -c ${PHYTEC_SDK_URL}/${PHYTEC_SDK_FILE} && \
     echo "${PHYTEC_SDK_CHECKSUM}  /tmp/VV/DOWN/${PHYTEC_SDK_FILE}" | shasum -c && \
     sudo chmod a+x /tmp/VV/DOWN/${PHYTEC_SDK_FILE} && \
