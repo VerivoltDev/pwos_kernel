@@ -49,9 +49,9 @@ mkdir -vp "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 echo ">>> Copy boot files" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 cp -v arch/arm64/boot/Image "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 cp -v .config "${KERNEL_OUT_DIR}"/boot/config &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
-cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.3.dts "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
-cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.3.dtb "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
-cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.3.dtb "${KERNEL_OUT_DIR}"/boot/oftree &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
+cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.4.dts "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
+cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.4.dtb "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
+cp -v arch/arm64/boot/dts/ti/k3-am642-powerwatch-v0.4.dtb "${KERNEL_OUT_DIR}"/boot/oftree &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 
 echo ">>> Installing Modules" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 make INSTALL_MOD_PATH="${KERNEL_OUT_DIR}" modules_install &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
