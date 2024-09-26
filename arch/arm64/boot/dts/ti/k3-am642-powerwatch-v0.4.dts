@@ -488,11 +488,19 @@
 		touchscreen-swapped-x-y;
 	};
 
-	// eeprom@51 {
-	// 	compatible = "atmel,24c02";
-	// 	pagesize = <16>;
-	// 	reg = <0x51>;
-	// };
+	memory_cb: eeprom@50 {
+		compatible = "atmel,24c1024";
+		pinctrl-names = "default";
+		pagesize = <256>;
+		reg = <0x50>;
+	};
+
+	memory_bb: eeprom@52 {
+		compatible = "atmel,24c1024";
+		pinctrl-names = "default";
+		pagesize = <256>;
+		reg = <0x52>;
+	};
 
 	lm75_0@48 {
 		compatible = "nxp,lm75";
