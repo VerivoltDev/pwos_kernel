@@ -459,12 +459,6 @@
 	clock-frequency = <400000>;
 };
 
-
-// &epwm3{
-// 	status = "okay";
-// };
-
-
 &main_i2c1 {
 	status = "okay";
 	pinctrl-names = "default";
@@ -502,40 +496,59 @@
 		reg = <0x52>;
 	};
 
-	lm75_0@48 {
-		compatible = "nxp,lm75";
+	tmp1075_1: lm75@48 {
+		compatible = "national,lm75";
 		reg = <0x48>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 	
-	lm75_1@49 {
-		compatible = "nxp,lm75";
+	tmp1075_2: lm75@49 {
+		compatible = "national,lm75";
 		reg = <0x49>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 
-	lm75_2@4a {
-		compatible = "nxp,lm75";
+	tmp1075_3: lm75@4a {
+		compatible = "national,lm75";
 		reg = <0x4a>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 
-	lm75_3@4b {
-		compatible = "nxp,lm75";
+	tmp1075_4: lm75@4b {
+		compatible = "national,lm75";
 		reg = <0x4b>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 
-	lm75_4@4c {
-		compatible = "nxp,lm75";
+	tmp1075_5: lm75@4c {
+		compatible = "national,lm75";
 		reg = <0x4c>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 
-	lm75_5@4f {
-		compatible = "nxp,lm75";
+	tmp1075_6: lm75@4f {
+		compatible = "national,lm75";
 		reg = <0x4f>;
+		status = "okay";
+		vs-supply = <&vdd_3v3>;
+		#thermal-sensor-cells = <0>;
 	};
 
 	emc2301: emc2301@2f {
-		compatible = "microchip,emc2301";
+		compatible = "smsc,emc2301";
 		reg = <0x2f>;
 		status = "okay";
+		pwm-freq = <25000>;
 		#cooling-cells = <0x02>;
 	};
 };
