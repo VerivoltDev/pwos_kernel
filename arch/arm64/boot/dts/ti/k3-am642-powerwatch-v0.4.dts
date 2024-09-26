@@ -729,12 +729,12 @@
 		trips {
 			main0_thermal_trip0: main0-thermal-trip0 {
 				temperature = <50000>;  /* millicelsius */
-				hysteresis = <2000>;    /* millicelsius */
+				hysteresis = <5000>;    /* millicelsius */
 				type = "active";
 			};
 
 			main0_thermal_trip1: main0-thermal-trip1 {
-				temperature = <60000>;  /* millicelsius */
+				temperature = <70000>;  /* millicelsius */
 				hysteresis = <2000>;    /* millicelsius */
 				type = "active";
 			};
@@ -750,6 +750,26 @@
 			map1: map1 {
 				trip = <&main0_thermal_trip1>;
 				cooling-device = <&emc2301 7 THERMAL_NO_LIMIT>;
+			};
+		};
+	};
+
+	tmp1075_thermal {
+		polling-delay-passive = <1000>;
+		polling-delay = <1000>;
+
+		thermal-sensors = <&tmp1075_1 &tmp1075_2 &tmp1075_3 &tmp1075_4 &tmp1075_5>;
+
+		trips {
+			trip1 {
+				temperature = <50000>;
+				hysteresis = <5000>;
+				type = "passive";
+			};
+			trip2 {
+				temperature = <70000>;
+				hysteresis = <2000>;
+				type = "critical";
 			};
 		};
 	};
