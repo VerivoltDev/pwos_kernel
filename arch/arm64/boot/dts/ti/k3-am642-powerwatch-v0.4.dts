@@ -704,7 +704,7 @@
 		polling-delay-passive = <250>;	/* milliSeconds */
 		polling-delay = <500>;		/* milliSeconds */
 		thermal-sensors = <&main_vtm0 0>;
-		
+
 		trips {
 			main0_thermal_trip0: main0-thermal-trip0 {
 				temperature = <50000>;  /* millicelsius */
@@ -721,27 +721,17 @@
 		};
 
 		cooling-maps {
-
-
-
 			map0: map0 {
 				trip = <&main0_thermal_trip0>;
 				cooling-device = <&emc2301 0 6>;
 			};
+
 			map1: map1 {
 				trip = <&main0_thermal_trip1>;
 				cooling-device = <&emc2301 7 THERMAL_NO_LIMIT>;
 			};
-
-
-
-
-
 		};
 	};
-
-
-
 };
 
 &main_spi2 {
@@ -808,6 +798,13 @@
 	status = "disabled";
 };
 
+&cpu0 {
+	#cooling-cells = <0x02>;
+};
+
+&cpu1 {
+	#cooling-cells = <0x02>;
+};
 
 &ospi0 {
 	status = "okay";

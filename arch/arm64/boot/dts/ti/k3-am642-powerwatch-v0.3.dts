@@ -225,7 +225,6 @@
 &main_pmx0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&user_gpio_connector>;
-#include <dt-bindings/thermal/thermal.h>
 	can_tc1_pins_default: can-tc1-pins-default {
 		pinctrl-single,pins = <
 			AM64X_IOPAD(0x0084, PIN_OUTPUT, 7)	/* (P16) GPMC0_ADVn_ALE.GPIO0_32 */
