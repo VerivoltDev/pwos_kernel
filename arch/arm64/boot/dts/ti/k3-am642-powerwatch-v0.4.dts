@@ -861,6 +861,7 @@
 	#cooling-cells = <0x02>;
 };
 
+/*
 &ospi0 {
 	status = "okay";
 	serial_flash: flash@0 {
@@ -916,4 +917,4 @@
 		};
 	};
 };
-
+*/
