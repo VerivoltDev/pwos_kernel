@@ -21,8 +21,9 @@
 #include "k3-am64-phycore-som.dtsi"
 
 / {
-	compatible = "phytec,am642-phyboard-electra-rdk",
-		     "phytec,am64-phycore-som", "ti,am642";
+	compatible ="phytec,am642-phyboard-electra-rdk",
+				"phytec,am64-phycore-som", 
+				"ti,am642";
 	model = "PHYTEC phyBOARD-Electra-AM64x RDK";
 
 	aliases {
@@ -36,6 +37,12 @@
 	chosen {
 		stdout-path = &main_uart0;
 	};
+
+	vv {
+        compatible = "vv,pw-v4";
+        status = "okay";
+        dts-version = "4.20";
+    };
 
 	can_tc1: can-phy0 {
 		compatible = "ti,tcan1042";
