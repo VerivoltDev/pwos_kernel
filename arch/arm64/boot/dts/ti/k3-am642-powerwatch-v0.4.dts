@@ -188,17 +188,21 @@
 		regulator-boot-on;
 		regulator-always-on;
 	};
-
-	wlan_en: regulator-1 {
+/*
+	wlan_en: regulator-wlan-en {
 		compatible = "regulator-fixed";
 		regulator-name = "wlan_en";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		enable-active-high;
+		regulator-boot-on;
+		regulator-always-on;
 		gpios = <&main_gpio0 40 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&wlan_en_pins_default>;
+		vin-supply = <&vdd_3v3>;
 	};
+*/
 };
 
 &main_pmx0 {
@@ -418,6 +422,17 @@
 
 };
 
+&main_gpio0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&wlan_en_pins_default>;
+	gpio-wlan-en {
+		gpio-hog;
+		gpios = <40 GPIO_ACTIVE_HIGH>;
+		output-high;
+		line-name = "m2_wlan_en";
+	};
+};
+
 &icssg0_mdio {
 	status = "okay";
 	pinctrl-names = "default";
@@ -623,8 +638,7 @@
 };
 
 &sdhci1 {
-	// vmmc-supply = <&vcc_3v3_mmc>;
-	vmmc-supply = <&wlan_en>;
+	vmmc-supply = <&vcc_3v3_mmc>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&main_mmc1_pins_default>;
 	bus-width = <4>;
