@@ -39,6 +39,23 @@ services:
     #   pw-kernel-init:
     #     condition: service_completed_successfully
 
+
+  pw-kernel-export:
+    image: pw-kernel-image
+    profiles:
+      - dontRunUp
+    user: "${DUID}:${DGID}"
+    working_dir: ${PWD}
+    environment:
+      - WORKDIR=${PWD}
+    volumes:
+      - ${PWD}:${PWD}
+    command: bash -c "./VV/scripts/genpatch2yocto.sh && ./VV/scripts/gentgz.sh"
+    # depends_on:
+    #   pw-kernel-build:
+    #     condition: service_completed_successfully
+
+
   pw-kernel-bash:
     image: pw-kernel-image
     profiles:
