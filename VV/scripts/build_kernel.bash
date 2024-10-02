@@ -14,12 +14,14 @@ function exitError {
     EXITMSG="${1:-ERROR}"
     echo "" |& tee -a "${SCRIPT_LOGFILE}" || exit $LINENO
     echo "####    ERROR    ####" |& tee -a "${SCRIPT_LOGFILE}" || exit $LINENO
-    tail "${SCRIPT_LOGFILE}"
+    echo "" &>> "${SCRIPT_LOGFILE}" || exit $LINENO
+    tail "${SCRIPT_LOGFILE}" || exit $LINENO
     echo "" &>> "${SCRIPT_LOGFILE}" || exit $LINENO
     echo "${FUNCNAME[1]}[${BASH_LINENO[0]}]" |& tee -a "${SCRIPT_LOGFILE}" || exit $LINENO
     echo "${EXITMSG}" |& tee -a "${SCRIPT_LOGFILE}" || exit $LINENO
     echo "See ${SCRIPT_LOGFILE} for more details" || exit $LINENO
     # [[ $(type -t exitScript) == function ]] && exitScript || exit $LINENO
+    echo ""
     exit $LINENO
 }
 
@@ -41,10 +43,14 @@ make -j"$(nproc)" &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 
 printf "\n>>> Kernel has been successfully compiled\n" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 
-KERNEL_OUT_DIR=${VV_DIR_KOUT}/${DATESTAMP}_$(make kernelversion)
+KERNEL_VERSION=$(make kernelversion)
+KERNEL_OUT_DIR=${VV_DIR_KOUT}/${DATESTAMP}_${KERNEL_VERSION}
 
+echo "${KERNEL_VERSION}" > "${VV_DIR_LOGS}"/VV_LAST_KERNEL_VER
 echo "${KERNEL_OUT_DIR}" > "${VV_DIR_LOGS}"/VV_LAST_KERNEL_DIR
 mkdir -vp "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
+rm -vrf xOUT &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
+ln -vs "${KERNEL_OUT_DIR}" xOUT &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 
 echo ">>> Copy boot files" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 cp -v arch/arm64/boot/Image "${KERNEL_OUT_DIR}"/boot &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
@@ -57,4 +63,4 @@ echo ">>> Installing Modules" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 make INSTALL_MOD_PATH="${KERNEL_OUT_DIR}" modules_install &>> "${SCRIPT_LOGFILE}" || exitError $LINENO
 
 echo ">>> Kernel has been successfully build, OUT files are located in:" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
-printf ">>> %s\n\n" "${KERNEL_OUT_DIR}" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
+printf ">>> ./xOUT that point to %s\n\n" "${KERNEL_OUT_DIR}" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO

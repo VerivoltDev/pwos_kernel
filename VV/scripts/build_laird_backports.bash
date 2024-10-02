@@ -57,7 +57,7 @@ make INSTALL_MOD_PATH="${KERNEL_OUT_DIR}" modules_install &>> "${SCRIPT_LOGFILE}
 
 echo ">>> Kernel AND Laird backports has been successfully build!!" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 echo ">>> OUT files are located in:" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
-printf ">>> %s\n\n" "${KERNEL_OUT_DIR}" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
+printf ">>> ./xOUT that point to %s\n\n" "${KERNEL_OUT_DIR}" |& tee -a "${SCRIPT_LOGFILE}" || exitError $LINENO
 
 ## shellcheck source=/dev/null
 # . ~/SDK_PHYTEC/environment-setup-aarch64-phytec-linux && \
