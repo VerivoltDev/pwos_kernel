@@ -41,7 +41,7 @@
 	vv {
         compatible = "vv,pw-v4";
         status = "okay";
-        dts-version = "4.20";
+        dts-version = "pwd-0421";
     };
 
 	can_tc1: can-phy0 {
@@ -774,7 +774,7 @@
 			};
 		};
 	};
-
+/*
 	tmp1075_thermal {
 		polling-delay-passive = <1000>;
 		polling-delay = <1000>;
@@ -794,6 +794,7 @@
 			};
 		};
 	};
+*/
 };
 
 &main_spi2 {
